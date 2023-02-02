@@ -1,0 +1,28 @@
+<html>
+
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+    <form>
+        <input type="email" name="email">
+        <input type="password" name="pass">
+        <button type="button" name="button" onclick="login()">Login</button>
+    </form>
+    <script>
+        async function login() {
+            let email = document.forms[0].email.value
+            let pass = document.forms[0].pass.value
+
+            let result =  (await fetch("http://localhost:15000/login",  { method: "POST", body: JSON.stringify({ "email": email, "pass": pass }),headers: {
+                'Content-Type': 'application/json'
+            } }))
+
+            let JSONresult = await result.json()
+            console.log(JSONresult);
+        }
+    </script>
+</body>
+
+</html>

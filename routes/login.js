@@ -11,7 +11,8 @@ const { redisClient } = require('../helper/redisClient')
 Router.post('/', async (req, res) => {
 
     let { email, pass } = req.body;
-    if (!(validator.isEmail(email) && validator.isEmpty(pass))) {
+    email = email.toLowerCase();
+    if (!(validator.isEmail(email) && !validator.isEmpty(pass))) {
         return res.send({status:false, msg: "Please enter valid email and password" })
     }
 

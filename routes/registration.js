@@ -10,8 +10,8 @@ const client = redis.createClient({
 });    
 
 const register = async(req,res) =>{
-    const {email,name, pass} = req.body;
-
+    let {email,name, pass} = req.body;
+    email = email.toLowerCase();
     if (!validator.isEmail(email)) {
       return res.json({ 
         "msg": "Invalid Email",

@@ -2,12 +2,7 @@ const express = require('express');
 const redis = require('redis');
 const md5 = require('md5');
 const validator = require('validator');
-
-
-const client = redis.createClient({
-    host:"127.0.0.1",
-    port:"6379"
-});    
+const {redisClient} = require("../helper/redisClient")
 
 const register = async(req,res) =>{
     let {email,name, pass} = req.body;
@@ -29,11 +24,11 @@ const register = async(req,res) =>{
     
     const hashedPassword = md5(pass);
 
-    if(!(client.isOpen && client.isReady)){
-      await client.connect();
+    if(!(redisClient.isOpen && redisClient.isReady)){
+      await redisClient.connect();
     }
     
-    let result = await client.hSet(email,{"name":name,"password":hashedPassword});
+    let result = await redisClient.hSet(email,{"name":name,"password":hashedPassword});
     name 
     if(result==0){
       res.json({

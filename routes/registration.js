@@ -10,24 +10,33 @@ const client = redis.createClient({
 });    
 
 const register = async(req,res) =>{
-    const {email,name, password} = req.body;
+    const {email,name, pass} = req.body;
 
     if (!validator.isEmail(email)) {
-      return res.status(400).json({ message: 'Invalid email address' });
+      return res.json({ 
+        "message": "Invalid email address",
+        "status": false
+       });
     }
     
-    const hashedPassword = md5(password);
-    await client.connect();
+    const hashedPassword = md5(pass);
+
+    if(!(client.isOpen && client.isReady)){
+      await client.connect();
+    }
+    
     let result = await client.hSet(email,{"name":name,"password":hashedPassword});
     name 
     if(result==0){
-      res.status(400).json({
-        "msg":"user is already exists"
+      res.json({
+        "msg":"user is already exists",
+        "status":false
       })
     }
     else{
       res.status(201).json({
-        "msg":"User account is created"
+        "msg":"User account is created",
+        "status":true
       })
     }
 };

@@ -14,10 +14,18 @@ const register = async(req,res) =>{
 
     if (!validator.isEmail(email)) {
       return res.json({ 
-        "message": "Invalid email address",
+        "msg": "Invalid Email",
         "status": false
        });
     }
+
+    if(validator.isEmpty(pass) || validator.isEmpty(name)){
+      return res.json({
+        "msg":"Please Enter proper Name and Password",
+        "status":false
+      })
+    }
+    
     
     const hashedPassword = md5(pass);
 
@@ -33,6 +41,7 @@ const register = async(req,res) =>{
         "status":false
       })
     }
+    
     else{
       res.status(201).json({
         "msg":"User account is created",

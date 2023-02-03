@@ -1,49 +1,37 @@
-const express = require('express');
+const router = require('express').Router();
 const redis = require('redis');
 const md5 = require('md5');
 const validator = require('validator');
-const {redisClient} = require("../helper/redisClient")
+const {redisClient,connectRedisClient} = require("../helper/redisClient");
+const { Router } = require('express');
 
-const register = async(req,res) =>{
+router.post("/", async(req,res) =>{
     let {email,name, pass} = req.body;
     email = email.toLowerCase();
     if (!validator.isEmail(email)) {
-      return res.json({ 
-        "msg": "Invalid Email",
-        "status": false
-       });
+      res.render("index.ejs",{status:false, msg:"Invalid Email, Please register again" })
+      return;
     }
 
     if(validator.isEmpty(pass) || validator.isEmpty(name)){
-      return res.json({
-        "msg":"Please Enter proper Name and Password",
-        "status":false
-      })
+      res.render("index.ejs",{status:false, msg:"Please Enter proper Name and Password" })
+      return;
     }
     
     
     const hashedPassword = md5(pass);
-
-    if(!(redisClient.isOpen && redisClient.isReady)){
-      await redisClient.connect();
-    }
+    await connectRedisClient()
     
     let result = await redisClient.hSet(email,{"name":name,"password":hashedPassword});
-    name 
+     
     if(result==0){
-      res.json({
-        "msg":"user is already exists",
-        "status":false
-      })
+      res.render("index.ejs",{status:false, msg:"user is already exists" })
     }
     
     else{
-      res.status(201).json({
-        "msg":"User account is created",
-        "status":true
-      })
+      res.render("index.ejs",{status:false, msg:"User account is created" })
     }
-};
+});
 
-module.exports = register;
+module.exports = router;
 

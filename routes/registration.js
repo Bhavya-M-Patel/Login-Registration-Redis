@@ -6,6 +6,7 @@ const { redisClient, connectRedisClient } = require("../helper/redisClient");
 const { Router } = require("express");
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
   let { email, name, pass } = req.body;
   email = email.toLowerCase();
   if (!validator.isEmail(email)) {
